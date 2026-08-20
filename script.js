@@ -208,3 +208,40 @@ const copyToClipboard = (text) => {
 document.addEventListener('DOMContentLoaded', () => {
     console.log('Portfolio site initialized');
 });
+
+// ===========================
+// IMAGE MODAL FOR CERTIFICATES
+// ===========================
+const modal = document.getElementById("imageModal");
+const modalImg = document.getElementById("modalImage");
+const captionText = document.getElementById("modalCaption");
+const closeBtn = document.getElementsByClassName("close-modal")[0];
+
+// Get all certificate images and add click event
+const certImages = document.querySelectorAll(".cert-image img");
+
+certImages.forEach(img => {
+    img.addEventListener('click', function() {
+        if(modal) {
+            modal.style.display = "block";
+            modalImg.src = this.src;
+            // Try to get alt text, or get the h3 text from the sibling .cert-info
+            const titleText = this.closest('.cert-card').querySelector('h3').innerText;
+            captionText.innerHTML = titleText;
+        }
+    });
+});
+
+// Close when clicking the (x) button
+if (closeBtn) {
+    closeBtn.onclick = function() {
+        modal.style.display = "none";
+    }
+}
+
+// Close when clicking anywhere outside the image
+window.addEventListener('click', (e) => {
+    if (e.target === modal) {
+        modal.style.display = "none";
+    }
+});
