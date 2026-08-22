@@ -113,28 +113,39 @@ const contactForm = document.querySelector('.contact-form');
 if (contactForm) {
     contactForm.addEventListener('submit', async (e) => {
         e.preventDefault();
-        
-        // Get form data
-        const formData = new FormData(contactForm);
-        const data = Object.fromEntries(formData);
-        
-        // Show success message
+
         const button = contactForm.querySelector('button');
         const originalText = button.textContent;
-        
-        button.textContent = 'Message Sent! 🎉';
-        button.style.background = '#4CAF50';
-        
-        // Reset form
-        contactForm.reset();
-        
-        // Reset button after 3 seconds
+        button.textContent = 'Sending...';
+        button.disabled = true;
+
+        const formData = new FormData(contactForm);
+
+        try {
+            const response = await fetch(contactForm.action, {
+                method: 'POST',
+                body: formData,
+                headers: { 'Accept': 'application/json' }
+            });
+
+            if (response.ok) {
+                button.textContent = 'Message Sent! 🎉';
+                button.style.background = '#4CAF50';
+                contactForm.reset();
+            } else {
+                button.textContent = 'Failed to send. Try again.';
+                button.style.background = '#e74c3c';
+            }
+        } catch (error) {
+            button.textContent = 'Failed to send. Try again.';
+            button.style.background = '#e74c3c';
+        }
+
         setTimeout(() => {
             button.textContent = originalText;
             button.style.background = '';
+            button.disabled = false;
         }, 3000);
-        
-        console.log('Form submitted:', data);
     });
 }
 
